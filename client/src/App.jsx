@@ -1,22 +1,61 @@
-import './App.css'
-// import StartPage from "./pages/StartPage";
-// import InvestorPage from "./pages/InvestorPage";
-// import CompanyPage from "./pages/CompanyPage";
-import DeveloperPage from './pages/DeveloperPage';
+import "./App.css";
+import StartPage from "./pages/StartPage";
+import NavBar from "./layouts/Navbar";
+import InvestorPage from "./pages/InvestorPage";
+import CompanyPage from "./pages/CompanyPage";
+// import DeveloperPage from "./pages/DeveloperPage";
 import Layout from "./Layout";
+import "@rainbow-me/rainbowkit/styles.css";
+import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { configureChains, createConfig, WagmiConfig } from "wagmi";
+import { publicProvider } from "wagmi/providers/public";
+import { useAccount } from "wagmi";
+import { useEffect,useState } from "react";
+
+
+import {
+  mainnet,
+  polygon,
+  base,
+  optimism,
+  arbitrum,
+  zora,
+  sepolia,
+  hardhat,
+} from "wagmi/chains";
+import DeveloperPage from "./pages/DeveloperPage";
+
+const { chains, publicClient } = configureChains(
+  [mainnet, polygon, optimism, arbitrum, base, zora, hardhat, sepolia],
+  [publicProvider()]
+);
+const { connectors } = getDefaultWallets({
+  appName: "Chamber",
+  projectId: "sfs",
+  chains,
+});
+const wagmiConfig = createConfig({
+  autoConnect: true,
+  connectors,
+  publicClient,
+});
+
+
 function App() {
 
   return (
-    <>
-      {/* <StartPage/> */}
-      {/* <CompanyPage/> */}
-      {/* <InvestorPage/> */}
-      {/* <DeveloperPage/> */}
-    <Layout>
-      <DeveloperPage/>
-    </Layout>
-    </>
-  )
+    <WagmiConfig config={wagmiConfig}>
+      <RainbowKitProvider chains={chains}>
+        {/* <StartPage/>
+          <CompanyPage/> 
+          <InvestorPage/> */}
+        <Layout>
+          <CompanyPage />
+        </Layout>
+      </RainbowKitProvider>
+    </WagmiConfig>
+  );
 }
 
-export default App
+export default App;
+

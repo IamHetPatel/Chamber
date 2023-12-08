@@ -1,57 +1,60 @@
 .nav-container{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    align-items: center;
-    position: relative;
-    top: 0;
-    width: 100%;
-    height: 120px;
-  }
-  
-  .title-container{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* position:absolute; */
-    /* left:0; */
-    height: 100%;
-    padding-left:50px;
-  }
-  .title {
-    font-family: 'Pacifico';
-    font-weight: 700;
-    color: #DCD7C9;
-    font-size: 40px;
-  }
-  
-  .menu-container{
-    position:absolute;
-    right:0;
-    padding-right:50px;
-    /* background-color: black; */
-    width: 45%;
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    align-items:center;
-  }
-  
-  .menu-option{
-    color: #DCD7C9;
-    background-color: rgba(39, 39, 39, 0.78);
-    /* background-color: rgba(5, 1, 8, 0.94); */
-    /* background: #6C338D; */
-    border-radius: 14px 14px 14px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30%;
-    height: 35%;
-    font-size: 14px;
-  }
-  
-  .menu-option:hover{
-      background: #6C338D;
-  }
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  top: 0;
+  width: 100%;
+  height: 120px;
+}
+
+.title-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* position:absolute; */
+  /* left:0; */
+  height: 100%;
+  padding-left:50px;
+}
+.title {
+  font-family: 'Pacifico';
+  font-weight: 700;
+  color: #DCD7C9;
+  font-size: 40px;
+}
+
+.menu-container{
+  position:absolute;
+  right:0;
+  padding-right:50px;
+  /* background-color: black; */
+  width: 65%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items:center;
+}
+
+.menu-option{
+  color: #DCD7C9;
+  background-color: rgba(39, 39, 39, 0.78);
+  /* background-color: rgba(5, 1, 8, 0.94); */
+  /* background: #6C338D; */
+  border-radius: 14px 14px 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+  height: 35%;
+  font-size: 14px;
+}
+
+.menu-option:hover{
+    background: #6C338D;
+}
+.menu-option:nth-child(3):hover {
+  background-color: rgba(39, 39, 39, 0.78);
+}
