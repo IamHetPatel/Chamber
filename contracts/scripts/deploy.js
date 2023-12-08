@@ -1,32 +1,38 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
+
 const hre = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
+  const [deployer] = await ethers.getSigners();
 
-  const lockedAmount = hre.ethers.parseEther("0.001");
+  console.log("Deploying contracts with account : ",await deployer.address);
+  const sbt = await hre.ethers.getContractFactory("newone");
+  const sbt_deploy = await sbt.deploy(deployer);
 
-  const lock = await hre.ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
+  console.log("SBT contract is deployed on address ",await sbt_deploy.getAddress());
+  saveFrontendFiles(sbt_deploy , "newone");
 
-  await lock.waitForDeployment();
-
-  console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
-  );
+  function saveFrontendFiles(contract, name) {
+    const fs = require("fs");
+    const contractsDir = __dirname + "/contractsData";
+  
+    if (!fs.existsSync(contractsDir)) {
+      fs.mkdirSync(contractsDir);
+    }
+  
+    fs.writeFileSync(
+      contractsDir + `/${name}-address.json`,
+      JSON.stringify({ address: contract.target }, undefined, 2)
+    );
+  
+    const contractArtifact = artifacts.readArtifactSync(name);
+  
+    fs.writeFileSync(
+      contractsDir + `/${name}.json`,
+      JSON.stringify(contractArtifact, null, 2)
+    );
+  }
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
