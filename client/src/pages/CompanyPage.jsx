@@ -1,20 +1,22 @@
 import '../styles/companyPage.css';
 import { useState } from "react";
 import { useAccount } from 'wagmi';
-
+import { readContract,writeContract } from 'wagmi/actions';
+import {address} from "../../contractData/newone-address.json"
+import {abi} from "../../contractData/newone.json"
 const CompanyPage = () => {
   const [githubUsername, setGithubUsername] = useState("");
   const [accessToken, setAccessToken] = useState("");
-  const { address } = useAccount();
-
-  const onSubmit = () => {
+  const { WalAddress } = useAccount();
+  const onSubmit = async () => {
     // Create an object with the form data
     const formData = {
       name: githubUsername,
       token: accessToken,
-      walletAddress: address,
+      walletAddress: WalAddress,
     };
 
+  
     // Create headers for the POST request
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -35,7 +37,20 @@ const CompanyPage = () => {
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
+      try{
+        await writeContract({
+          abi: abi,
+          address: address,
+          functionName: 'safeMint',
+          args: ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",3,"Company"]
+      })
+      console.log("object")
+      }
+      catch(error){
+        console.log(error)
+      }
   };
+
   return (
     <>
       <div className="company-page-container">
