@@ -22,6 +22,8 @@ const createCompany = async(username, token, walletAddress)=>{
     walletAddress:walletAddress
   })
   await company.save()
+
+  return true;
 }
 
 

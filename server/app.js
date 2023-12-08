@@ -34,12 +34,14 @@ app.get('/', (req, res) => {
     res.status(200).send("hello")
 })
 
-app.post('/createCompany', (req, res) => {
-    console.log(req.body);
+app.post('/createCompany', async(req, res) => {
+    // console.log(req.body);
     const {name, token, walletAddress} = req.body;
-    const response = functions.createCompany(name, token, walletAddress)
+    const response = await functions.createCompany(name, token, walletAddress)
+    // console.log(response);
 
-    res.status(200).send(response)
+    res.status(200).send({response : response})
+
 
 })
 
@@ -48,8 +50,9 @@ app.post('/createRepo', (req, res) => {
     console.log(req.body);
     const {name, description, token} = req.body;
     const response = functions.createRepo(name,description, token)
+    console.log(response);
 
-    res.status(200).send(response)
+    res.status(200).send({response})
 
 })
 
