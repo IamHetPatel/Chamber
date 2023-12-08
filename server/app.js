@@ -47,11 +47,8 @@ app.post('/createCompany', async(req, res) => {
 
 
 app.post('/createRepo', (req, res) => {
-    console.log(req.body);
     const {name, description, token} = req.body;
-    const response = functions.createRepo(name,description, token)
-    console.log(response);
-
+    const response = functions.createRepo(name, description, token)
     res.status(200).send({response})
 
 })
