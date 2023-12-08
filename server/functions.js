@@ -97,9 +97,7 @@ const createIssue = async (owner, repo, title, body, token) => {
   }
 };
 
-const createRepo = async (name, description, walletAddress) => {
-  const response = await Company.findOne({walletAddress:walletAddress})
-  const token = response.token
+const createRepo = async (name, description, token) => {
   try {
     const octokit = new Octokit({
       auth: token,
