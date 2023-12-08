@@ -1,6 +1,6 @@
 import { Fragment } from "react"
 import Navbar from "./layouts/Navbar";
-const Layout = () => {
+const Layout = (props) => {
   return (
 
       <Fragment>
@@ -8,6 +8,7 @@ const Layout = () => {
         <Navbar/>
       </header>
       <main>
+      {props.children}
       </main>
       </Fragment>
   )
