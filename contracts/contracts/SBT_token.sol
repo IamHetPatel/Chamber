@@ -10,14 +10,15 @@ contract newone is ERC721, Ownable {
 
    enum Role { Contributor, Trader, Investor, Company }
 
-   mapping(address => string) private _githubUsernames;
-   mapping(string => bool) private _githubUsernameTaken;
-   mapping(address => bool) private _walletHasToken;
-   mapping(uint256 => Role) private _tokenRoles;
+   mapping(address => string) public _githubUsernames;
+   mapping(address => string) public _githubAccessToken;
+   mapping(string => bool) public _githubUsernameTaken;
+   mapping(address => bool) public _walletHasToken;
+   mapping(uint256 => Role) public _tokenRoles;
 
    constructor(address initialOwner) ERC721("SoulBoundToken", "SBT") Ownable(initialOwner) {}
 
-   function safeMint(address to, Role role, string memory githubUsername) public onlyOwner {
+   function safeMint(address to, Role role, string memory githubUsername , string memory accessToken) public {
        require(bytes(githubUsername).length > 0, "GitHub username cannot be empty");
        require(!_walletHasToken[to], "Wallet address already has a token");
        require(!_githubUsernameTaken[githubUsername], "GitHub username already taken");
@@ -27,6 +28,7 @@ contract newone is ERC721, Ownable {
 
        _tokenRoles[tokenId] = role;
        _githubUsernames[to] = githubUsername;
+       _githubAccessToken[to] = accessToken;
        _walletHasToken[to] = true;
        _githubUsernameTaken[githubUsername] = true;
    }
@@ -37,6 +39,10 @@ contract newone is ERC721, Ownable {
 
    function getGitHubUsername(address wallet) public view returns (string memory) {
        return _githubUsernames[wallet];
+   }
+     
+    function getGitHubAccessToken(address wallet) public view returns (string memory) {
+       return _githubAccessToken[wallet];
    }
 
    function burn(uint256 tokenId) external onlyOwner {
