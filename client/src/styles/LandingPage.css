@@ -1,0 +1,93 @@
+.landing-page-main-container{
+    display: flex;
+    position:fixed;
+    top:0;
+    z-index: 1;
+    background: radial-gradient(208.8% 107.18% at -3.13% 33.54%, #482372 0%, #3C065E 45.94%, #2E065A 100%);
+    height: 100vh;
+    width: 100%;
+    justify-content: center;
+}   
+
+.landing-page-wave-container{
+    width: 100%;
+    height: 100vh;
+    background-image: url(../assets/background.svg);
+    background-origin: padding-box;
+    background-position: 0px 80px;
+    background-size:cover;
+    margin:0;
+    padding:0;
+}
+
+.landing-page-container{
+    width: 100%;
+    height: 100%;
+    /* background-color: aqua; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:40px;
+}
+
+.landing-content-container{
+    width: 35%;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: left; 
+    justify-content: center;
+    /* background-color: #482372; */
+}
+.landing-page-button{
+    width: 35%;
+    height: 15%;
+    border-radius: 40px;
+    background-color:   #DCD7C9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #482372;
+    font-weight: bolder;
+    cursor: pointer;
+    transition: all 0.2s ease-in;
+    border: none;
+    margin-top: 30px;
+}
+.landing-page-button:hover{
+    background-color: rgba(154, 87, 195, 1);
+    color:white;
+}
+
+.landing-page-title{
+    font-family: 'Pacifico';
+  font-weight: 700;
+  color: #DCD7C9;
+  font-size: 100px;
+  /* background-color: aqua; */
+}
+.landing-page-subtitle{
+    font-family: 'Montserrat';
+    font-weight: 400;
+    color: #DCD7C9;
+    font-size: 20px;
+    /* background-color: aqua; */
+}
+
+
+
+.landing-page-image-container{
+    width: 45%;
+    height: 70%;
+    display: flex;
+    /* background-color: black; */
+    padding-top: 40px;
+
+}
+
+.landing-page-image{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

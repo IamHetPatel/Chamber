@@ -5,6 +5,7 @@ import CompanyPage from "./pages/CompanyPage";
 import DeveloperPage from "./pages/DeveloperPage";
 import MaintainerPage from "./pages/MaintainerPage";
 import DevUser from "./components/developer/DevUser";
+import LandingPage from "./pages/LandingPage";
 import Layout from "./Layout";
 import "@rainbow-me/rainbowkit/styles.css";
 import {
@@ -56,7 +57,8 @@ function App() {
       >
         <Layout>
           <Routes>
-            <Route exact path="/" element={<StartPage />} />
+            <Route exact path="/start" element={<StartPage />} />
+            <Route exact path="/" element={<LandingPage />} />
             <Route exact path="/CompanyPage" element={<CompanyPage />} />
             <Route path="/DeveloperPage" element={<DeveloperPage />} />
             <Route path="/InvestorPage" element={<InvestorPage />} />

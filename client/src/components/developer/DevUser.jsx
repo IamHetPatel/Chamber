@@ -8,12 +8,12 @@ import { contract_address as na } from "../../../contractData/newone-address.jso
 import { abi as newOneAbi } from "../../../contractData/newone.json"
 import { abi as daoAbi } from "../../../contractData/DAO.json";
 import { contract_address as da } from "../../../contractData/DAO-address.json";
-// import { useNavigate } from "react-router-dom";  
+import { useNavigate } from "react-router-dom";  
 import { Link ,Navigate} from "react-router-dom";
 export default function DevUser() {
 const [githubUsername, setGithubUsername] = useState("");
 const { isConnected, address } = useAccount();
-
+const navigate = useNavigate();
 
 
 const onSubmit = async () => {
@@ -27,9 +27,19 @@ const onSubmit = async () => {
       });
       console.log(address);
       setTimeout(3000);
-    window.location.href="/DeveloperPage";
+      // window.location.href = "/DeveloperPage";
     } catch (error) {
-      console.error("Error minting:", error);
+      const errorMessage = error.message || ""; // Ensure error.message is a string
+
+      // Check if the error message contains the specific phrase
+      if (errorMessage.includes("Wallet address already has a token")) {
+        // Navigate to the DeveloperPage.jsx when the error occurs
+        navigate("/DeveloperPage");
+ // Change to the correct path without the .jsx extension
+      } else {
+        // Handle other errors as needed
+        console.error("Error:", error);
+      }
     }
     
     }

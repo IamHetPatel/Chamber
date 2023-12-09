@@ -126,7 +126,7 @@ backdrop-filter: blur(3.5px); */
     padding-left: 10px;
     margin-bottom: 20px;
     margin-top: 10px;
-    background: rgba(220,215,201, 0.05);
+    
 }
 .submit-button:hover{
     background: rgba(220,215,201,0.1);
