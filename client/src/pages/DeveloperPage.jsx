@@ -1,23 +1,31 @@
+import { useState } from 'react'
 import '../styles/developerPage.css'
+// import Issue from '../components/Issue'
+import ProjectModal from '../components/ProjectModal'
+import ExploreItem from '../components/ExploreItem'
 
 const DeveloperPage = () => {
+  const [openModal,setOpenModal] = useState(false)
+  const [selectedTitle,setSelectedTitle] = useState('')
+  const [selectedId,setSelectedId] = useState('')
   return (
     <>
       <div className='developer-page-container'>
         <div className="explore-projects-container">
+          <ProjectModal openModal={openModal} setOpenModal={setOpenModal} title={selectedTitle} id={selectedId}/>
+          <div className={!openModal ? 'explore-wrapper' : 'hide'}>
           <div className='explore-title'>Explore Projects</div>
           <div className='titles'>
-            <div className='explore-column-title'>Projecs</div>
+            <div className='explore-column-title'>Project ID</div>
+            <div className='explore-column-title'>Project Name</div>
             <div className='explore-column-title'>Pool</div>
             <div className='explore-column-title'>Tokens</div>
           </div>
-          <div className='explore-list'>
-            <div className='explore-item'>
-            <div className='explore-list-project'>Chamber1</div>
-            <div className='explore-list-pool'>105K</div>
-            <div className='explore-list-token'>22</div>
+          <div className='explore-list' >
+          <ExploreItem id={101} name={'Project 1'} pool={100000} tokens={5} setOpenModal={setOpenModal} setSelectedTitle={setSelectedTitle} setSelectedId={setSelectedId}/>
           </div>
           </div>
+          
         </div>
         <div className="contributors-container">
             <div className="contributors-pride-container">
