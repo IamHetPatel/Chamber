@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract newone is ERC721, Ownable {
    uint256 private _tokenIdCounter;
 
-   enum Role { default,Contributor, Maintainer, Company }
+   enum Role { defaultRole,Contributor, Maintainer, Company }
 
    mapping(address => string) public _githubUsernames;
    mapping(address => string) public _githubAccessToken;
@@ -44,9 +44,9 @@ contract newone is ERC721, Ownable {
     function getGitHubAccessToken(address wallet) public view returns (string memory) {
        return _githubAccessToken[wallet];
    }
-   function _transfer(address from, address to, uint256 tokenId) internal virtual override {
-       require(from == address(0) || to == address(0), "This is a Soulbound token. It cannot be transferred. It can only be burned by the token owner.");
-       super._transfer(from, to, tokenId);
-   }
+//    function _transfer(address from, address to, uint256 tokenId) internal virtual override {
+//        require(from == address(0) || to == address(0), "This is a Soulbound token. It cannot be transferred. It can only be burned by the token owner.");
+//        super._transfer(from, to, tokenId);
+//    }
 }
 
