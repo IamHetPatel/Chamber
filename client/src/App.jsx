@@ -44,7 +44,7 @@ const wagmiConfig = createConfig({
 
 
 function App() {
-
+  
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider

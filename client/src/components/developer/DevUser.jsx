@@ -8,11 +8,12 @@ import { contract_address as na } from "../../../contractData/newone-address.jso
 import { abi as newOneAbi } from "../../../contractData/newone.json"
 import { abi as daoAbi } from "../../../contractData/DAO.json";
 import { contract_address as da } from "../../../contractData/DAO-address.json";
-// import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";  
 import { Link ,Navigate} from "react-router-dom";
 export default function DevUser() {
 const [githubUsername, setGithubUsername] = useState("");
 const { isConnected, address } = useAccount();
+
 
 
 const onSubmit = async () => {
@@ -25,10 +26,12 @@ const onSubmit = async () => {
         args: [address, 1, githubUsername, "NO_TOKEN"],
       });
       console.log(address);
+      setTimeout(3000);
+    window.location.href="/DeveloperPage";
     } catch (error) {
       console.error("Error minting:", error);
     }
-    <Navigate to="/" replace={true}/>
+    
     }
 
 
