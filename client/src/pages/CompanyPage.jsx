@@ -22,17 +22,16 @@ const CompanyPage = () => {
   const fetchProjects = async () => {
     try {
       const response = await readContract({
-        abi: daoAbi, // The ABI for your DAO contract
-        address: da, // The address of your DAO contract
-        functionName: "getDAO", // The function name to call
+        abi: daoAbi,
+        address: da,
+        functionName: "getDAO",
       });
       const data = response;
-      // console.log(data)
-
+  
       if (Array.isArray(data)) {
         const projectDetails = data.map((project) => ({
-          id: project.id.toString(), // Convert id to string if it's a BigInt
-          uri: project.uri , // Use an empty string if uri is undefined
+          id: project.id.toString(),
+          name: project.name || '', // Use an empty string if name is undefined
         }));
         setProjects(projectDetails);
       } else {
@@ -42,6 +41,7 @@ const CompanyPage = () => {
       console.error("Error fetching projects:", error);
     }
   };
+  
 
   useEffect(() => {
     fetchProjects();
@@ -365,16 +365,16 @@ const CompanyPage = () => {
         ) : (
           <div className="yourprojects-container">
             <div className="your-projects-title">Your Projects</div>
-            <div className="your-projects-list">
+              <div className="your-projects-list">
               {/* {console.log(projects)} */}
-              {projects.map(({ id, uri }, index) => (
+              {projects.map(({ id, name }, index) => (
                 <div
                   key={id}
                   className="your-projects-item"
                   onClick={() => onProjectItemClick(id)}
                 >
                   <div className="your-projects-num">{index + 1}</div>
-                  <div className="your-projects-name">{uri}</div>
+                  <div className="your-projects-name">{name}</div>
                 </div>
               ))}
             </div>

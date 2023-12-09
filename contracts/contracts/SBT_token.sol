@@ -14,7 +14,7 @@ contract newone is ERC721, Ownable {
    mapping(address => string) public _githubAccessToken;
    mapping(string => bool) public _githubUsernameTaken;
    mapping(address => bool) public _walletHasToken;
-   mapping(uint256 => Role) public _tokenRoles;
+   mapping(address => Role) public _tokenRoles;
 
    constructor(address initialOwner) ERC721("SoulBoundToken", "SBT") Ownable(initialOwner) {}
 
@@ -26,15 +26,15 @@ contract newone is ERC721, Ownable {
        _safeMint(to, tokenId);
        _tokenIdCounter += 1;
 
-       _tokenRoles[tokenId] = role;
+       _tokenRoles[to] = role;
        _githubUsernames[to] = githubUsername;
        _githubAccessToken[to] = accessToken;
        _walletHasToken[to] = true;
        _githubUsernameTaken[githubUsername] = true;
    }
 
-   function getRole(uint256 tokenId) public view returns (Role) {
-       return _tokenRoles[tokenId];
+   function getRole(address to) public view returns (Role) {
+       return _tokenRoles[to];
    }
 
    function getGitHubUsername(address wallet) public view returns (string memory) {

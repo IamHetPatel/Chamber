@@ -3,11 +3,33 @@ import "../styles/developerPage.css";
 // import Issue from '../components/Issue'
 import ProjectModal from "../components/Maintainer/ProjectModal";
 import ExploreItem from "../components/Maintainer/ExploreItem";
-
+import AddIssueModal from "../components/Maintainer/AddIssueModal";
+import { readContract, writeContract } from "@wagmi/core";
+import { contract_address as sbt_address } from "../../contractData/newone-address.json";
+import { abi as sbt_abi } from "../../contractData/newone.json";
+import { abi as dao_abi } from "../../contractData/DAO.json";
+import { contract_address as dao_address } from "../../contractData/DAO-address.json";
 const MaintainerPage = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedTitle, setSelectedTitle] = useState("");
   const [selectedId, setSelectedId] = useState("");
+
+  const loadDAO = async () => {
+    const dataDAO = await readContract({
+      abi: dao_abi,
+      address: dao_address,
+      functionName: "getDAO",
+    });
+  };
+  const getDAO_data = async () => {
+    const dataDAO_byID = await readContract({
+      abi: dao_abi,
+      address: dao_address,
+      functionName: "getIssueByDAO",
+      args : [dao_id]
+    });
+  };
+
   return (
     <>
       <div className="developer-page-container">
@@ -18,6 +40,7 @@ const MaintainerPage = () => {
             title={selectedTitle}
             id={selectedId}
           />
+          <AddIssueModal/>
           <div className={!openModal ? "explore-wrapper" : "hide"}>
             <div className="explore-title">Projects Assigned </div>
             <div className="titles">

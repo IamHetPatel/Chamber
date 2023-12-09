@@ -33,7 +33,10 @@ contract DAO is ERC20, ERC20Burnable, ERC20Permit {
         uint id;
         uint daoID;
         string name;
+<<<<<<< HEAD
         string description;
+=======
+>>>>>>> 9479cce74e632ad3f392d74c17650d12b062b0e7
         uint votes;
         uint status; // 0: Open, 1: In Progress, 2: Resolved, 3: Closed
         address contributor;

@@ -1,0 +1,26 @@
+.add-issue-button{
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+    width: 20%;
+    padding: 10px;
+    border-radius: 40px;
+    border: 0;
+    background-color: transparent;
+    border: 1px solid whitesmoke;
+    transition: all 0.1s ease-in;
+}
+.add-issue-button:hover{
+    cursor: pointer;
+    background-color: #6C338d;
+    border: 0;
+}
+.add-issue-modal{
+    position: fixed;
+    z-index: 4;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0,0.75);
+}
