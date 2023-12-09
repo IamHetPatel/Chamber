@@ -3,6 +3,7 @@ import "../styles/developerPage.css";
 // import Issue from '../components/Issue'
 import ProjectModal from "../components/Maintainer/ProjectModal";
 import ExploreItem from "../components/Maintainer/ExploreItem";
+import AddIssueModal from "../components/Maintainer/AddIssueModal";
 import { readContract, writeContract } from "@wagmi/core";
 import { contract_address as sbt_address } from "../../contractData/newone-address.json";
 import { abi as sbt_abi } from "../../contractData/newone.json";
@@ -39,6 +40,7 @@ const MaintainerPage = () => {
             title={selectedTitle}
             id={selectedId}
           />
+          <AddIssueModal/>
           <div className={!openModal ? "explore-wrapper" : "hide"}>
             <div className="explore-title">Projects Assigned </div>
             <div className="titles">
