@@ -121,10 +121,7 @@ backdrop-filter: blur(3.5px); */
 .pre-cont-token{
     width: 25%;
 }
-.explore-title{
-    color: white;
-    font-size: xx-large;
-}
+
 
 .titles{
     width: 100%;
@@ -140,7 +137,6 @@ backdrop-filter: blur(3.5px); */
     flex: 33%;
     font-weight: bold;
     color: white;
-  
 }   
 .explore-list{
     margin-top: 15px ;
@@ -164,4 +160,9 @@ backdrop-filter: blur(3.5px); */
     border-left: 5px solid #6C338d;
     border-radius: 5px;
     padding-left: 10px;
+}
+.explore-title{
+    font-size: x-large;
+    padding-bottom: 20px;
+    font-weight: bolder;   
 }

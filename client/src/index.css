@@ -9,12 +9,28 @@
   }
   
   body {
-    /* margin: 0;
-    display: flex;
-    place-items: center;
-    width: 100vw; */
     min-height: 100vh;
     overflow: hidden;
   }
   
   *{box-sizing: border-box }
+  .rainbow-kit-connect-button {
+  background-color: rgba(39, 39, 39, 0.78);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 16px;
+  padding: 10px 20px;
+  width: 150px;
+  height: 40px;
+}
+
+.rainbow-kit-connect-button:hover {
+    background: #6C338D;
+  cursor: pointer;
+}
+
+.rainbow-kit-connect-button:focus {
+  outline: 0;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}

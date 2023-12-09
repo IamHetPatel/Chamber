@@ -30,15 +30,16 @@
 }
 .project-description{
     font-size: 20px;
+    color: rgb(186, 185, 185);
 }
 .issues-list-heading{
     display: flex;
     flex-direction: row;
     width: 100%;
     justify-content: space-between;
-    
 }
 .issues-list-title{
     text-align: center;
     width: 33%;
+    margin-top: 4vh;
 }

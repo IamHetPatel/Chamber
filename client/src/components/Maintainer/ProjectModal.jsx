@@ -1,13 +1,12 @@
 import { useState } from "react";
 import Issue from "./Issue";
-import "../styles/projectModal.css"
+import "../../styles/projectModal.css"
 const ProjectModal = ({ id, title, openModal, setOpenModal }) => {
   //you can use id directly here to fetch
   //we have passed it as a prop
  
   return (
     <>
-     
       <div className={openModal ? "single-project-modal" : "hide"}>
         <span
           className="close-button-modal"
@@ -27,7 +26,6 @@ const ProjectModal = ({ id, title, openModal, setOpenModal }) => {
           id={1}
           name={"Change UI"}
           reward={100}
-         
         />
       </div>
     </>

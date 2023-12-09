@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import "../styles/issue.css"
+import "../../styles/issue.css"
 const Issue = ({ id, name, reward }) => {
     const [openIssueModal, setOpenIssueModal] = useState(false);
 
