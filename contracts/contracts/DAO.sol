@@ -37,7 +37,7 @@ contract DAO is ERC20, ERC20Burnable, Ownable, ERC20Permit{
     struct daoStruct{
         uint id;
         address Organizer;
-        string uri;
+        string name;
         bool closed;
     }
     struct issueStruct{

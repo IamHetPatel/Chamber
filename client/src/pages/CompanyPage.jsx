@@ -1,9 +1,11 @@
 import "../styles/companyPage.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { readContract, writeContract } from "@wagmi/core";
-import { contract_address } from "../../contractData/newone-address.json";
-import { abi } from "../../contractData/newone.json";
+import { contract_address as na } from "../../contractData/newone-address.json";
+import { abi as newOneAbi } from "../../contractData/newone.json";
+import { abi as daoAbi } from "../../contractData/DAO.json";
+import { contract_address as da } from "../../contractData/DAO-address.json";
 const CompanyPage = () => {
   const [githubUsername, setGithubUsername] = useState("");
   const [accessToken, setAccessToken] = useState("");
@@ -11,6 +13,40 @@ const CompanyPage = () => {
   const [modal, setModal] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [maintainerWalletAddress, setMaintainerWalletAddress] = useState("");
+  const [maintainerGithub, setMaintainerGithub] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
+  const [projects, setProjects] = useState([]);
+
+  // Fetch projects from DAO API when the component mounts
+  const fetchProjects = async () => {
+    try {
+      const response = await readContract({
+        abi: daoAbi, // The ABI for your DAO contract
+        address: da, // The address of your DAO contract
+        functionName: "getDAO", // The function name to call
+      });
+      const data = response;
+      // console.log(data)
+
+      if (Array.isArray(data)) {
+        const projectDetails = data.map((project) => ({
+          id: project.id.toString(), // Convert id to string if it's a BigInt
+          uri: project.uri , // Use an empty string if uri is undefined
+        }));
+        setProjects(projectDetails);
+      } else {
+        console.error("Data is not an array:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
   const onProjectItemClick = (projectId) => {
     // Set the selected project's ID
     setSelectedProjectId(projectId);
@@ -18,22 +54,84 @@ const CompanyPage = () => {
     setModal(true);
   };
   const onMaintainerSubmit = async () => {
-    // Make API call to add maintainer using selectedProjectId and maintainerWalletAddress
-    // Example:
-    // fetch(`https://your-api-endpoint/addMaintainer/${selectedProjectId}`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ maintainerWalletAddress }),
-    // })
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     // Handle the response as needed
-    //   })
-    //   .catch(error => console.error('Error:', error));
+    try {
+      const data = await readContract({
+        abi: newOneAbi,
+        address: na,
+        functionName: "_githubUsernameTaken",
+        args: [maintainerGithub],
+      });
 
-    // Reset the modal and input after submitting
+      console.log(data);
+      if (!data) {
+        await writeContract({
+          abi: newOneAbi,
+          address: na,
+          functionName: "safeMint",
+          args: [maintainerWalletAddress, 2, maintainerGithub, 'NO_TOKEN'],
+        });
+      }
+
+      await writeContract({
+        abi: daoAbi,
+        address: da,
+        functionName: "joinDAO",
+        args: [selectedProjectId, maintainerWalletAddress],
+      });
+
+      
+      // const dataUserName = await readContract({
+      //   abi: newOneAbi,
+      //   address: na,
+      //   functionName: "_githubUsernames",
+      //   args: [address],
+      // });
+      // const dataProjName = await readContract({
+      //   abi: daoAbi,
+      //   address: da,
+      //   functionName: "daos",
+      //   args: [selectedProjectId],
+      // });
+      const dao = await readContract({
+        abi: daoAbi,
+        address: da,
+        functionName: "daos",
+        args: [selectedProjectId],
+      })
+      const dataAccessToken = await readContract({
+        abi: newOneAbi,
+        address: na,
+        functionName: "_githubAccessToken",
+        args: [address],
+      });
+
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      // console.log("das", dataUserName);
+      console.log(dao);
+      const repo = dao[2].split('/')
+      console.log(dataAccessToken);
+      var raw = JSON.stringify({
+        owner: repo[0],
+        repo: repo[1],
+        assignee: maintainerGithub,
+        token: dataAccessToken,
+      });
+
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      fetch("http://10.0.1.160:3000/addCollaborator", requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.log("error", error));
+    } catch (error) {
+      console.log(error);
+    }
     setModal(false);
     setMaintainerWalletAddress("");
   };
@@ -45,7 +143,7 @@ const CompanyPage = () => {
       token: accessToken,
       walletAddress: address,
     };
-    console.log(formData);
+    // console.log(formData);
 
     // Create headers for the POST request
     const myHeaders = new Headers();
@@ -68,12 +166,12 @@ const CompanyPage = () => {
       .catch((error) => console.log("error", error));
     try {
       await writeContract({
-        abi: abi,
-        address: contract_address,
+        abi: newOneAbi,
+        address: na,
         functionName: "safeMint",
-        args: [address, 3, "Company", accessToken],
+        args: [address, 3, githubUsername, accessToken],
       });
-      console.log("object");
+      // console.log("object");
     } catch (error) {
       console.log(error);
     }
@@ -82,21 +180,31 @@ const CompanyPage = () => {
   const getAccessToken = async () => {
     try {
       const data = await readContract({
-        abi: abi,
-        address: contract_address,
+        abi: newOneAbi,
+        address: na,
         functionName: "getGitHubAccessToken",
         args: [address],
       });
-      console.log(data);
       return data;
     } catch (error) {
-      console.log(address);
       console.log(error);
     }
   };
 
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
+  const getGithubUsername = async () => {
+    try {
+      const data = await readContract({
+        abi: newOneAbi,
+        address: na,
+        functionName: "_githubUsernames",
+        args: [address],
+      });
+    
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const onSubmitProject = async () => {
     const formData = {
@@ -117,7 +225,7 @@ const CompanyPage = () => {
       body: raw,
       redirect: "follow",
     };
-
+    const owner = await getGithubUsername()
     try {
       const response = await fetch(
         "http://10.0.1.160:3000/createRepo",
@@ -125,10 +233,25 @@ const CompanyPage = () => {
       );
       const result = await response.text();
       console.log(result);
+      setProjects((prevProjects) => [
+        ...prevProjects,
+        {
+          name: `${owner}/chamber-${projectName}`,
+          description: projectDescription /* other fields */,
+        },
+      ]);
+      await writeContract({
+        abi: daoAbi,
+        address: da,
+        functionName: "createDAO",
+        args: [`${owner}/chamber-${projectName}`],
+      });
+      console.log("written");
     } catch (error) {
-      console.log("error", error);
+      console.log(error);
     }
   };
+
   return (
     <>
       <div className="company-page-container">
@@ -191,10 +314,6 @@ const CompanyPage = () => {
                 <label for="project-amount">Project Amount</label>
                 <input type="text" id="input" name="project-amount" />
               </div>
-              <div className="project-tokens">
-                <label for="project-tokens">Project Tokens</label>
-                <input type="text" id="input" name="project-tokens" />
-              </div>
             </form>
             <button
               className="submit-button"
@@ -229,12 +348,15 @@ const CompanyPage = () => {
                   id="input"
                   name="maintainer-github"
                   placeholder="Maintainer GitHub Username"
-                  value={maintainerWalletAddress}
-                  onChange={(e) => setMaintainerWalletAddress(e.target.value)}
+                  value={maintainerGithub}
+                  onChange={(e) => setMaintainerGithub(e.target.value)}
                 />
               </div>
               <div className="modal-button-container">
-                <button className="modal-button" onClick={onMaintainerSubmit}>
+                <button
+                  className="modal-button"
+                  onClick={() => onMaintainerSubmit(selectedProjectId)}
+                >
                   Add Maintainer
                 </button>
               </div>
@@ -244,14 +366,17 @@ const CompanyPage = () => {
           <div className="yourprojects-container">
             <div className="your-projects-title">Your Projects</div>
             <div className="your-projects-list">
-              <div
-                className="your-projects-item"
-                onClick={() => onProjectItemClick(1)}
-              >
-                <div className="your-projects-num">1</div>
-                <div className="your-projects-name">Chamber</div>
-                <div className="your-projects-Funding">99k</div>
-              </div>
+              {/* {console.log(projects)} */}
+              {projects.map(({ id, uri }, index) => (
+                <div
+                  key={id}
+                  className="your-projects-item"
+                  onClick={() => onProjectItemClick(id)}
+                >
+                  <div className="your-projects-num">{index + 1}</div>
+                  <div className="your-projects-name">{uri}</div>
+                </div>
+              ))}
             </div>
           </div>
         )}
