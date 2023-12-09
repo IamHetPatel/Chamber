@@ -44,18 +44,6 @@ contract newone is ERC721, Ownable {
     function getGitHubAccessToken(address wallet) public view returns (string memory) {
        return _githubAccessToken[wallet];
    }
-
-   function burn(uint256 tokenId) external onlyOwner {
-       address owner = ownerOf(tokenId);
-       require(owner == msg.sender, "Only the owner of the token can burn it.");
-       _burn(tokenId);
-
-       // Clean up mappings after burning
-       delete _tokenRoles[tokenId];
-       delete _githubUsernames[owner];
-       _walletHasToken[owner] = false;
-   }
-
    function _transfer(address from, address to, uint256 tokenId) internal virtual override {
        require(from == address(0) || to == address(0), "This is a Soulbound token. It cannot be transferred. It can only be burned by the token owner.");
        super._transfer(from, to, tokenId);

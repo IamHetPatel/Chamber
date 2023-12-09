@@ -33,10 +33,7 @@ contract DAO is ERC20, ERC20Burnable, ERC20Permit {
         uint id;
         uint daoID;
         string name;
-<<<<<<< HEAD
         string description;
-=======
->>>>>>> 9479cce74e632ad3f392d74c17650d12b062b0e7
         uint votes;
         uint status; // 0: Open, 1: In Progress, 2: Resolved, 3: Closed
         address contributor;
@@ -80,6 +77,7 @@ contract DAO is ERC20, ERC20Burnable, ERC20Permit {
     mapping(address => uint256) public tokensAssignedToDAO;
     mapping(address => uint256) public tokensAssignedToMaintainer;
     mapping(uint => DaoSupplyInfo) public daoSupplies; // Each DAO will have its own supply information
+    mapping (address => uint[] ) public daoMaintainers;
 
     // The createDAO function now accepts a totalSupply parameter
     function createDAO(string memory githubUserName, uint totalSupply) public returns (uint) {
@@ -122,6 +120,7 @@ contract DAO is ERC20, ERC20Burnable, ERC20Permit {
         maintainerCounter++;
         maintainers[maintainerCounter] = maintainerStruct(daoID, maintainer);
         _transfer(msg.sender, maintainer, supplyInfo.maintainerAllocation);
+        daoMaintainers[maintainer].push(daoID);
 
         supplyInfo.remainingSupply = supplyInfo.remainingSupply - supplyInfo.maintainerAllocation;
 }
@@ -132,6 +131,21 @@ contract DAO is ERC20, ERC20Burnable, ERC20Permit {
             allDAO[i - 1] = daos[i];
         }
         return allDAO;
+    }
+    function getDAObyMaintainer(address maintainer) public view returns (daoStruct[] memory) {
+        // Retrieve a list of all DAO IDs that the maintainer is part of
+        uint[] memory maintainerDAOIds = daoMaintainers[maintainer];
+
+        // Prepare an array to hold the resulting daoStructs
+        daoStruct[] memory maintainerDAOs = new daoStruct[](maintainerDAOIds.length);
+
+        // Iterate over the DAO IDs and fetch the corresponding daoStructs
+        for (uint i = 0; i < maintainerDAOIds.length; i++) {
+            uint daoID = maintainerDAOIds[i];
+            maintainerDAOs[i] = daos[daoID];
+        }
+
+        return maintainerDAOs;
     }
 
     function createIssue(
