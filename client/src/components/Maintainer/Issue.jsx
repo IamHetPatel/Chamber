@@ -65,11 +65,7 @@ const Issue = ({ id, name, reward }) => {
         <span className="issues-col">{name}</span>
         <span className="issues-col">{reward}</span>
       </div>
-      <div className="add-issue-button">
-        <button className="add-issue-button" onClick={() => setOpenIssueModal(true)}>
-          Add Project
-        </button>
-      </div>
+
     </>
   );
 };

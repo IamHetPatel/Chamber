@@ -3,7 +3,7 @@ import "../styles/developerPage.css";
 // import Issue from '../components/Issue'
 import ProjectModal from "../components/Maintainer/ProjectModal";
 import ExploreItem from "../components/Maintainer/ExploreItem";
-import AddIssueModal from "../components/Maintainer/AddIssueModal";
+// import AddIssueModal from "../components/Maintainer/AddIssueModal";
 import { useAccount } from "wagmi";
 import { readContract, writeContract } from "@wagmi/core";
 import { contract_address as sbt_address } from "../../contractData/newone-address.json";
@@ -26,10 +26,8 @@ const MaintainerPage = () => {
         args: [address]
       });
 
-      // Assuming dataDAO is an array and has at least one element
       const firstItem = dataDAO[0];
 
-      // Update state with relevant data
       setDaoData({
         id: firstItem.id,
         name: firstItem.name// You may want to rename this key to match your component
@@ -79,7 +77,7 @@ const MaintainerPage = () => {
             title={selectedTitle}
             id={selectedId}
           />
-          <AddIssueModal/>
+          {/* <AddIssueModal/> */}
           <div className={!openModal ? "explore-wrapper" : "hide"}>
             <div className="explore-title">Projects Assigned </div>
             <div className="titles">

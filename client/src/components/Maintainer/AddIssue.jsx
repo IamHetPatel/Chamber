@@ -1,22 +1,67 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import "../../styles/addIssue.css";
+import { readContract,writeContract } from "@wagmi/core";
+import { abi as dao_abi } from "../../../contractData/DAO.json";
+import { contract_address as dao_address } from "../../../contractData/DAO-address.json";
 
 const AddIssue = ({ setOpenAddIssueModal }) => {
-  const [projectId, setProjectId] = useState("");
+  const [projectId, setProjectId] = useState(0);
   const [issueName, setIssueName] = useState("");
   const [issueDescription, setIssueDescription] = useState("");
-  const [issueWeight, setIssueWeight] = useState("");
+  const [issueWeight, setIssueWeight] = useState(0);
 
-  const handleAddIssue = () => {
-    // You can implement logic to add the new issue here
-    // For simplicity, let's just print the values for now
-    console.log("Project ID:", projectId);
-    console.log("Issue Name:", issueName);
-    console.log("Issue Description:", issueDescription);
-    console.log("Issue Weight:", issueWeight);
+  const handleAddIssue = async (e) => {
+    e.preventDefault();
+    try {
 
-    // Close the modal after adding the issue
-    setOpenAddIssueModal(false);
+      console.log(projectId)
+      const projID = await readContract({
+        abi : dao_abi,
+        address : dao_address,
+        functionName : "daos",
+        args : [projectId]
+      })
+      console.log(projID)
+      console.log(issueName)
+      console.log(issueDescription)
+      console.log(issueWeight)
+      const repo = projID[2].split('/');
+
+      console.log(repo[0])
+      console.log(repo[1])
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      var raw = JSON.stringify({
+        owner: repo[0],
+        repo: repo[1],
+        title: issueName,
+        body: issueDescription
+      });
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+      };
+
+      fetch("http://10.0.1.160:3000/createIssue", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
+      await writeContract({
+          abi : dao_abi,
+          address : dao_address,
+          functionName : "createIssue",
+          args :[projectId,issueName,issueDescription,issueWeight]
+      })
+    console.log("object");
+  } catch (error) {
+    console.error("Error adding issue:", error);
+  }
+
+  setOpenAddIssueModal(false);
   };
 
   return (
@@ -57,9 +102,9 @@ const AddIssue = ({ setOpenAddIssueModal }) => {
             onChange={(e) => setIssueWeight(e.target.value)}
           />
 
-          <button className="submit-button" onClick={handleAddIssue}>
-            Add Issue
-          </button>
+        <button className="submit-button" onClick={handleAddIssue}>
+          Add Issue
+        </button>
         </form>
       </div>
     </>
