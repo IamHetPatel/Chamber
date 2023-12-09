@@ -55,8 +55,8 @@ app.post('/createRepo', (req, res) => {
 
 app.post('/createIssue', async(req, res) => {
     console.log(req.body);
-    const {owner, repo, title, body,token} = req.body;
-    const response = await functions.createIssue(owner, repo, title, body,token)
+    const {owner, repo, title, body} = req.body;
+    const response = await functions.createIssue(owner, repo, title, body)
     console.log(response);
 
     res.status(200).send({response : response})
@@ -73,9 +73,6 @@ app.post('/getOpenIssue', async(req, res) => {
   res.status(200).send(response)
 
 })
-
-
-
 
 app.post('/addCollaborator', async(req, res) => {
     const {owner, repo,assignee, token} = req.body;

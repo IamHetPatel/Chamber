@@ -80,8 +80,10 @@ const assignIssues = async (owner, repo, issue_number,assignee) => {
   );
 };
 
-const createIssue = async (owner, repo, title, body, token) => {
+const createIssue = async (owner, repo, title, body) => {
   try {
+    const userCompany = await Company.findOne({username:owner})
+    const token = userCompany.token;
     const octokit = new Octokit({
       auth: token,
     });
