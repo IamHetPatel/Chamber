@@ -259,10 +259,10 @@ const CompanyPage = () => {
             <div className="company-token">
               <label htmlFor="company-token">GitHub Access Token</label>
               <input
-                type="text"
+                type="password"
                 id="input"
                 name="company-token"
-                placeholder="468e065...."
+                placeholder="ghp_46e065..."
                 value={accessToken}
                 onChange={(e) => setAccessToken(e.target.value)}
               />
