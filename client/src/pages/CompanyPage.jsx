@@ -16,6 +16,7 @@ const CompanyPage = () => {
   const [maintainerGithub, setMaintainerGithub] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
+  const [projectAmount, setProjectAmount] = useState("");
   const [projects, setProjects] = useState([]);
 
   // Fetch projects from DAO API when the component mounts
@@ -71,6 +72,7 @@ const CompanyPage = () => {
           args: [maintainerWalletAddress, 2, maintainerGithub, 'NO_TOKEN'],
         });
       }
+      console.log(selectedProjectId,maintainerWalletAddress)
 
       await writeContract({
         abi: daoAbi,
@@ -78,20 +80,6 @@ const CompanyPage = () => {
         functionName: "joinDAO",
         args: [selectedProjectId, maintainerWalletAddress],
       });
-
-      
-      // const dataUserName = await readContract({
-      //   abi: newOneAbi,
-      //   address: na,
-      //   functionName: "_githubUsernames",
-      //   args: [address],
-      // });
-      // const dataProjName = await readContract({
-      //   abi: daoAbi,
-      //   address: da,
-      //   functionName: "daos",
-      //   args: [selectedProjectId],
-      // });
       const dao = await readContract({
         abi: daoAbi,
         address: da,
@@ -244,7 +232,7 @@ const CompanyPage = () => {
         abi: daoAbi,
         address: da,
         functionName: "createDAO",
-        args: [`${owner}/chamber-${projectName}`],
+        args: [`${owner}/chamber-${projectName}`,projectAmount],
       });
       console.log("written");
     } catch (error) {
@@ -311,8 +299,14 @@ const CompanyPage = () => {
                 />
               </div>
               <div className="project-amount">
-                <label for="project-amount">Project Amount</label>
-                <input type="text" id="input" name="project-amount" />
+                <label htmlFor="project-amount">Project Amount</label>
+                <input 
+                  type="number" 
+                  id="input"
+                  name="project-amount" 
+                  value={projectAmount} 
+                  onChange={(e) => setProjectAmount(e.target.value)}
+                  />
               </div>
             </form>
             <button
