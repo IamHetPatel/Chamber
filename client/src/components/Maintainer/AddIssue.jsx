@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../../styles/issue.css";
+import "../../styles/addIssue.css";
 
 const AddIssue = ({ setOpenAddIssueModal }) => {
   const [projectId, setProjectId] = useState("");
