@@ -43,7 +43,7 @@ contract DAO is ERC20, ERC20Burnable, Ownable, ERC20Permit{
     struct issueStruct{
         uint id;
         uint daoID;
-        string uri;
+        string name;
         uint votes;
         uint status;// 0: Open, 1: In Progress, 2: Resolved, 3: Closed
         address contributor;
