@@ -27,7 +27,7 @@ async function main() {
   
     fs.writeFileSync(
       contractsDir + `/${name}-address.json`,
-      JSON.stringify({ address: contract.target }, undefined, 2)
+      JSON.stringify({ contract_address: contract.target }, undefined, 2)
     );
   
     const contractArtifact = artifacts.readArtifactSync(name);
