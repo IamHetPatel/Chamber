@@ -29,9 +29,9 @@
 .menu-container{
   position:absolute;
   right:0;
-  padding-right:50px;
+  padding-right:75px;
   /* background-color: black; */
-  width: 65%;
+  width: 60%;
   height: 100%;
   display: flex;
   justify-content: space-between;

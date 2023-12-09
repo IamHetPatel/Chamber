@@ -15,9 +15,28 @@
     border-left: 5px solid #6C338d;
     border-radius: 5px;
 }
-
-
-
+.add-issue-button{
+    width: 20%;
+    border: 0px;
+    height: 12%;
+    font-size: 20px;
+    color: #6C338D;
+    font-weight: 700;
+    background-color: rgba(39, 39, 39, 0.78);
+    position: absolute;
+    bottom: 2vh;
+    right: 2vw;
+    border-radius: 10px;
+}
+.add-issue-button:hover{
+    background-color: #6C338D;
+    color: #DCD7C9;
+    cursor: pointer;
+    
+}
+.add-issue{
+    height: 100%;
+}
 
 .issue-modal{
     position: fixed;

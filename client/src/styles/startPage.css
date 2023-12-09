@@ -39,4 +39,5 @@
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(3.5px);
   padding-left: 20px;
+  cursor: pointer;
 }

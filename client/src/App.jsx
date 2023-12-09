@@ -4,6 +4,7 @@ import InvestorPage from "./pages/InvestorPage";
 import CompanyPage from "./pages/CompanyPage";
 import DeveloperPage from "./pages/DeveloperPage";
 import MaintainerPage from "./pages/MaintainerPage";
+import DevUser from "./components/developer/DevUser";
 import Layout from "./Layout";
 import "@rainbow-me/rainbowkit/styles.css";
 import {
@@ -51,12 +52,8 @@ function App() {
         theme={darkTheme({
           accentColor: "rgba(39, 39, 39, 0.78)",
           accentColorForeground: "#DCD7C9",
-          // borderRadius: "small",
         })}
       >
-        {/* <StartPage/>
-          <CompanyPage/> 
-          <InvestorPage/> */}
         <Layout>
           <Routes>
             <Route exact path="/" element={<StartPage />} />
@@ -64,6 +61,7 @@ function App() {
             <Route path="/DeveloperPage" element={<DeveloperPage />} />
             <Route path="/InvestorPage" element={<InvestorPage />} />
             <Route path="/MaintainerPage" element={<MaintainerPage />} />
+            <Route path="/DevUser" element={<DevUser />} />
           </Routes>
         </Layout>
       </RainbowKitProvider>

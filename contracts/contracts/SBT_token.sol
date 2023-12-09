@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract newone is ERC721, Ownable {
    uint256 private _tokenIdCounter;
 
-   enum Role { Contributor, Trader, Investor, Company }
+   enum Role { default,Contributor, Maintainer, Company }
 
    mapping(address => string) public _githubUsernames;
    mapping(address => string) public _githubAccessToken;
