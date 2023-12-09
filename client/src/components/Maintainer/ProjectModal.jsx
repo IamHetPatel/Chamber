@@ -55,8 +55,8 @@ const ProjectModal = ({ id, title, openModal, setOpenModal }) => {
                     reward={Number(weight)}
                   />
                 )
-                })}
-              }
+                }})}
+              
         <AddIssueModal />
       </div>
     </>
