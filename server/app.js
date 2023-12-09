@@ -59,7 +59,7 @@ app.post('/createIssue', async(req, res) => {
     const response = await functions.createIssue(owner, repo, title, body,token)
     console.log(response);
 
-    res.status(200).send(response)
+    res.status(200).send({response : response})
 
 })
 
@@ -80,7 +80,7 @@ app.post('/getOpenIssue', async(req, res) => {
 app.post('/addCollaborator', async(req, res) => {
     const {owner, repo,assignee, token} = req.body;
     const response = await functions.addCollaborator(owner, repo, assignee, token)
-    res.status(200).send(response)
+    res.status(200).send({response : response})
 
 })
 

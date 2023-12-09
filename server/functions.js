@@ -29,21 +29,24 @@ const createCompany = async(username, token, walletAddress)=>{
 
 
 const addCollaborator = async (owner, repo ,assignee, token) => {
-    const octokit = new Octokit({
-      auth: token,
-    });
+  try {
+  const octokit = new Octokit({
+    auth: token
+  })
   
-    await octokit.request('PUT /repos/{owner}/{repo}/collaborators/{username}', {
-      owner: owner,
-      repo: repo,
-      username: assignee,
-      permission: 'pull',
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    })
-
+  await octokit.request('PUT /repos/{owner}/{repo}/collaborators/{username}', {
+    owner: owner,
+    repo: repo,
+    username: assignee,
+    headers: {
+      'X-GitHub-Api-Version': '2022-11-28'
+    }
+  })
+  return true;
+} catch (error) {
+  return error;
 }
+};
 
 const assignIssues = async (owner, repo, issue_number,assignee) => {
   const userCompany = await Company.findOne({username:owner})
