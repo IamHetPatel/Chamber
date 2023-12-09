@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/developerPage.css";
 // import Issue from '../components/Issue'
 import ProjectModal from "../components/Maintainer/ProjectModal";
 import ExploreItem from "../components/Maintainer/ExploreItem";
 import AddIssueModal from "../components/Maintainer/AddIssueModal";
+import { useAccount } from "wagmi";
 import { readContract, writeContract } from "@wagmi/core";
 import { contract_address as sbt_address } from "../../contractData/newone-address.json";
 import { abi as sbt_abi } from "../../contractData/newone.json";
@@ -13,14 +14,52 @@ const MaintainerPage = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedTitle, setSelectedTitle] = useState("");
   const [selectedId, setSelectedId] = useState("");
+  const { address } = useAccount();
+  const [daoData, setDaoData] = useState([]);
 
   const loadDAO = async () => {
-    const dataDAO = await readContract({
-      abi: dao_abi,
-      address: dao_address,
-      functionName: "getDAO",
-    });
+    try {
+      const dataDAO = await readContract({
+        abi: dao_abi,
+        address: dao_address,
+        functionName: "getDAObyMaintainer",
+        args: [address]
+      });
+
+      // Assuming dataDAO is an array and has at least one element
+      const firstItem = dataDAO[0];
+
+      // Update state with relevant data
+      setDaoData({
+        id: firstItem.id,
+        name: firstItem.name// You may want to rename this key to match your component
+      });
+      
+      console.log(dataDAO);
+    } catch (error) {
+      console.error('Error loading DAO:', error);
+    }
   };
+
+  useEffect(() => {
+    // Call the loadDAO function when the component mounts
+    loadDAO();
+  }, []);
+
+  // const loadDAO = async () => {
+  //   const dataDAO = await readContract({
+  //     abi: dao_abi,
+  //     address: dao_address,
+  //     functionName: "getDAObyMaintainer",
+  //     args : [address]
+  //   });
+  //   console.log(dataDAO);
+  // };
+
+
+  // useEffect(()=>{
+  //   loadDAO();
+  // })
   const getDAO_data = async () => {
     const dataDAO_byID = await readContract({
       abi: dao_abi,
@@ -51,10 +90,10 @@ const MaintainerPage = () => {
             </div>
             <div className="explore-list">
               <ExploreItem
-                id={101}
-                name={"Project 1"}
-                pool={100000}
-                tokens={5}
+                id={daoData.id?.toString()}
+                name={daoData.name}
+                pool={100000} // Example value, replace with actual data
+                tokens={5} // Example value, replace with actual data
                 setOpenModal={setOpenModal}
                 setSelectedTitle={setSelectedTitle}
                 setSelectedId={setSelectedId}

@@ -1,9 +1,19 @@
 import { useState } from "react";
 import Issue from "./Issue";
 import "../../styles/projectModal.css"
+
 const ProjectModal = ({ id, title, openModal, setOpenModal }) => {
-  //you can use id directly here to fetch
-  //we have passed it as a prop
+  const fetchProjects = async () => {
+    try {
+      
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchProjects();
+  }, []);
  
   return (
     <>

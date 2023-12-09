@@ -44,8 +44,6 @@ const fetchProjects = async () => {
   }
 };
 
-const createIssue = 
-
 useEffect(() => {
   fetchProjects();
 }, []);
