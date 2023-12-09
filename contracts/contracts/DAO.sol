@@ -7,54 +7,50 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
-
-contract DAO is ERC20, ERC20Burnable, Ownable, ERC20Permit{
-    uint public immutable TOTAL_SUPPLY ;
-    uint public immutable INITIAL_DAO_TOKEN_ALLOCATION ;
-    uint public immutable MAINTAINER_TOKEN_ALLOCATION ;
+contract DAO is ERC20, ERC20Burnable, ERC20Permit {
     //uint public ISSUE_TOKEN_ALLOCATION;
-    constructor(address initialOwner)
-        ERC20("Krishna", "JSK")
-        Ownable(initialOwner)
-        ERC20Permit("Krishna")
-    {
-        TOTAL_SUPPLY = 100;
-        INITIAL_DAO_TOKEN_ALLOCATION = 50;
-        MAINTAINER_TOKEN_ALLOCATION = 5;
-
-        _mint(msg.sender, TOTAL_SUPPLY);
+    constructor() ERC20("Krishna", "JSK") ERC20Permit("Krishna") {
+        // The Ownable constructor does not require arguments and will set the deployer as the initial owner.
     }
 
-    function mint(address to, uint amount) public onlyOwner {
+    function mint(address to, uint amount) public  {
         _mint(to, amount);
     }
+
+
     uint daoCounter;
     uint issueCounter;
     uint voteCounter;
     uint maintainerCounter;
-    uint commentCounter;
     uint voteTokenCounter;
-    struct daoStruct{
+    struct daoStruct {
         uint id;
         address Organizer;
         string name;
         bool closed;
     }
-    struct issueStruct{
+    struct issueStruct {
         uint id;
         uint daoID;
-        string uri;
+        string name;
+        string description;
         uint votes;
-        uint status;// 0: Open, 1: In Progress, 2: Resolved, 3: Closed
+        uint status; // 0: Open, 1: In Progress, 2: Resolved, 3: Closed
         address contributor;
-        // uint token;
-        // uint weight;//0 : high , 1: medium , 2 : low
+        uint weight; //0 : high , 1: medium , 2 : low
     }
-    struct maintainerStruct{
+    struct DaoSupplyInfo {
+        uint totalSupply;
+        uint initialAllocation;
+        uint maintainerAllocation;
+        uint tokenReward;
+        uint remainingSupply; // The remaining tokens that are unallocated within the DAO
+    }
+    struct maintainerStruct {
         uint256 daoID;
         address maintainer;
     }
-    struct voteStruct{
+    struct voteStruct {
         uint daoID;
         uint issueID;
         address maintainer;
@@ -72,106 +68,147 @@ contract DAO is ERC20, ERC20Burnable, Ownable, ERC20Permit{
         string solution;
         uint256 votes;
     }
-    mapping(uint256=>daoStruct) public daos;
-    mapping(uint256=>issueStruct) public issues;
-    mapping(uint256=>maintainerStruct) public maintainers;
-    mapping(uint256=>voteStruct) public votes;
+    mapping(uint256 => daoStruct) public daos;
+    mapping(uint256 => issueStruct) public issues;
+    mapping(uint256 => maintainerStruct) public maintainers;
+    mapping(uint256 => voteStruct) public votes;
     mapping(uint256 => commentStruct) public comments;
     mapping(uint256 => Nomination[]) public nominations;
     mapping(address => uint256) public tokensAssignedToDAO;
     mapping(address => uint256) public tokensAssignedToMaintainer;
-    mapping(address => uint256) public voteToken;
+    mapping(uint => DaoSupplyInfo) public daoSupplies; // Each DAO will have its own supply information
 
-    function createDAO(string memory githubUserName) public returns(uint) {
+    // The createDAO function now accepts a totalSupply parameter
+    function createDAO(string memory githubUserName, uint totalSupply) public returns (uint) {
+        require(totalSupply > 0, "Total supply must be greater than zero");
+
         daoCounter++;
-        daos[daoCounter]=daoStruct(daoCounter,msg.sender,githubUserName,false);
-        mint(address(this), INITIAL_DAO_TOKEN_ALLOCATION);
-        tokensAssignedToDAO[address(this)]+=INITIAL_DAO_TOKEN_ALLOCATION;
+        daos[daoCounter] = daoStruct(
+            daoCounter,
+            msg.sender,
+            githubUserName,
+            false
+        );
+
+        // Define the initial allocation based on the total supply
+        uint initialAllocation = totalSupply / 2;
+        uint maintainerAllocation = totalSupply / 10;
+        uint tokenReward = totalSupply / 25;
+
+        daoSupplies[daoCounter] = DaoSupplyInfo({
+            totalSupply: totalSupply,
+            initialAllocation: initialAllocation,
+            maintainerAllocation: maintainerAllocation,
+            tokenReward: tokenReward,
+            remainingSupply: totalSupply - initialAllocation // Reserve the initial allocation for the DAO
+        });
+
+        _mint(msg.sender, initialAllocation); // Mint only the initial allocation to the DAO creator
         return daoCounter;
     }
-    function joinDAO(uint daoID, address maintainer) public {
-        require(daos[daoID].Organizer==msg.sender,"Only orgainzer can add the maintainer");
-        maintainerCounter++;
-        maintainers[maintainerCounter]= maintainerStruct(daoID,maintainer);
-        _transfer(address(this),maintainer,MAINTAINER_TOKEN_ALLOCATION);
-        tokensAssignedToDAO[address(this)]-=MAINTAINER_TOKEN_ALLOCATION;
-        tokensAssignedToMaintainer[address(this)]+=MAINTAINER_TOKEN_ALLOCATION;
+    function getsupply(uint daoID) public view returns (uint){
+        return daoSupplies[daoID].remainingSupply;
     }
-    function getDAO() public view returns(daoStruct[] memory){
+
+    function joinDAO(uint daoID, address maintainer) public {
+        require(daos[daoID].Organizer == msg.sender, "Only organizer can add the maintainer");
+
+        DaoSupplyInfo storage supplyInfo = daoSupplies[daoID];
+        require(supplyInfo.remainingSupply >= supplyInfo.maintainerAllocation, "Not enough tokens in DAO supply");
+
+        maintainerCounter++;
+        maintainers[maintainerCounter] = maintainerStruct(daoID, maintainer);
+        _transfer(msg.sender, maintainer, supplyInfo.maintainerAllocation);
+
+        supplyInfo.remainingSupply = supplyInfo.remainingSupply - supplyInfo.maintainerAllocation;
+}
+
+    function getDAO() public view returns (daoStruct[] memory) {
         daoStruct[] memory allDAO = new daoStruct[](daoCounter);
-        for(uint i=1;i<=daoCounter;i++){
-            allDAO[i-1]=daos[i];
+        for (uint i = 1; i <= daoCounter; i++) {
+            allDAO[i - 1] = daos[i];
         }
         return allDAO;
     }
-    function createIssue(uint daoID, string memory uri) public returns (uint) {
-        require(isMaintainer(daoID, msg.sender), "Only maintainers can create issues");
+
+    function createIssue(
+        uint daoID,
+        string memory name,
+        string memory description,
+        uint weight
+    ) public returns (uint) {
+        require(
+            isMaintainer(daoID, msg.sender),
+            "Only maintainers can create issues"
+        );
         issueCounter++;
-        issues[issueCounter] = issueStruct(issueCounter, daoID, uri, 0,0,address(0));
+        issues[issueCounter] = issueStruct(
+            issueCounter,
+            daoID,
+            name,
+            description,
+            0,
+            0,
+            address(0),
+            weight
+        );
         return issueCounter;
     }
-    //  function voteOnToken_weight(uint256 issueID,uint weight) public {
-    //     uint256 daoID = issues[issueID].daoID;
-    //     require(isMaintainer(daoID, msg.sender), "Only maintainers can vote on nominations");
-    //     require(!hasVoted(daoID, issueID, msg.sender), "Maintainer has already voted on this issue");
 
-    //     uint256 votingPower = balanceOf(msg.sender);
-    //     require(votingPower > 0, "Maintainer must have tokens to vote");
-    //     voteTokenCounter++;
-    //     voteToken[msg.sender]=weight;
-    // }
-    //  function assignToken(uint256 issueID) public {
-    //     uint256 maxVotes = 0;
-    //     uint winningWeight = -1;
-    //     for (uint i = 0; i < voteToken.length; i++) {
-    //         if () {
-    //             winningNominee = nominations[issueID][i].nominee;
-    //             maxVotes = nominations[issueID][i].votes;
-    //         }
-    //     }
-    //     require(winningNominee != address(0), "No winner found for issue assignment");
-    //     issues[issueID].status = 1;
-    //     issues[issueID].contributor = winningNominee;
-    //     issues[issueID].votes = maxVotes;
-    // }
     function updateIssueStatus(uint issueID, uint newStatus) public {
         require(newStatus >= 0 && newStatus <= 3, "Invalid issue status value");
         issues[issueID].status = newStatus;
     }
-    function isMaintainer(uint daoID, address maintainer) public view returns (bool) {
+
+    function isMaintainer(
+        uint daoID,
+        address maintainer
+    ) public view returns (bool) {
         for (uint i = 1; i <= maintainerCounter; i++) {
-            if (maintainers[i].daoID == daoID && maintainers[i].maintainer == maintainer) {
+            if (
+                maintainers[i].daoID == daoID &&
+                maintainers[i].maintainer == maintainer
+            ) {
                 return true;
             }
         }
         return false;
     }
-    function getIssue() public view returns(issueStruct[] memory){
+
+    function getIssue() public view returns (issueStruct[] memory) {
         issueStruct[] memory allIssue = new issueStruct[](issueCounter);
-        for(uint i=1;i<=daoCounter;i++){
-            allIssue[i-1]=issues[i];
+        for (uint i = 1; i <= daoCounter; i++) {
+            allIssue[i - 1] = issues[i];
         }
         return allIssue;
     }
-    function getIssueByDAO(uint daoID) public view returns(issueStruct[] memory){
+
+    function getIssueByDAO(
+        uint daoID
+    ) public view returns (issueStruct[] memory) {
         issueStruct[] memory allIssueByDAO = new issueStruct[](issueCounter);
         uint count = 0;
-        for(uint i=1;i<=daoCounter;i++){
-            if(issues[i].daoID == daoID){
-                allIssueByDAO[count++]=issues[i];
+        for (uint i = 1; i <= daoCounter; i++) {
+            if (issues[i].daoID == daoID) {
+                allIssueByDAO[count++] = issues[i];
             }
         }
         return allIssueByDAO;
     }
-    function getMaintainersByDAO(uint daoID) public view returns(maintainerStruct[] memory){
+
+    function getMaintainersByDAO(
+        uint daoID
+    ) public view returns (maintainerStruct[] memory) {
         uint numMaintainers = 0;
         for (uint i = 1; i <= maintainerCounter; i++) {
             if (maintainers[i].daoID == daoID) {
                 numMaintainers++;
             }
         }
-        maintainerStruct[] memory allMaintainersbyDAO = new maintainerStruct[](numMaintainers);
-        uint256 counter=0;
+        maintainerStruct[] memory allMaintainersbyDAO = new maintainerStruct[](
+            numMaintainers
+        );
+        uint256 counter = 0;
         for (uint i = 1; i <= numMaintainers; i++) {
             if (maintainers[i].daoID == daoID) {
                 allMaintainersbyDAO[counter] = maintainers[i];
@@ -180,46 +217,49 @@ contract DAO is ERC20, ERC20Burnable, Ownable, ERC20Permit{
         }
         return allMaintainersbyDAO;
     }
-    function hasVoted(uint256 daoID, uint256 issueID, address maintainer) public view returns(bool){
-            for(uint i=0;i<voteCounter;i++){
-                if(votes[i].daoID ==daoID && votes[i].issueID==issueID && votes[i].maintainer==maintainer){
-                    return true;
-                }
-            }
-            return false;
-    }
-    function addCommentToIssue(uint issueID, string memory comment, string memory details) public returns (uint) {
-        require(isMaintainer(issues[issueID].daoID, msg.sender), "Only maintainers can add comments to issues");
-        commentCounter++;
-        comments[commentCounter] = commentStruct(commentCounter, issueID, msg.sender, comment, details);
-        return commentCounter;
-    }
-    function getCommentsByIssue(uint issueID) public view returns (commentStruct[] memory) {
-        uint numComments = 0;
-        for (uint i = 1; i <= commentCounter; i++) {
-            if (comments[i].issueID == issueID) {
-                numComments++;
+
+    function hasVoted(
+        uint256 daoID,
+        uint256 issueID,
+        address maintainer
+    ) public view returns (bool) {
+        for (uint i = 0; i < voteCounter; i++) {
+            if (
+                votes[i].daoID == daoID &&
+                votes[i].issueID == issueID &&
+                votes[i].maintainer == maintainer
+            ) {
+                return true;
             }
         }
-
-        commentStruct[] memory issueComments = new commentStruct[](numComments);
-        uint counter = 0;
-        for (uint i = 1; i <= commentCounter; i++) {
-            if (comments[i].issueID == issueID) {
-                issueComments[counter] = comments[i];
-                counter++;
-            }
-        }
-
-        return issueComments;
+        return false;
     }
-    function nominateContributor(uint256 issueID, address nominee,string memory solution) public {
-        nominations[issueID].push(Nomination({issueID: issueID, nominee: nominee,solution:solution, votes: 0}));
+
+
+    function nominateContributor(
+        uint256 issueID,
+        string memory solution
+    ) public {
+        nominations[issueID].push(
+            Nomination({
+                issueID: issueID,
+                nominee: msg.sender,
+                solution: solution,
+                votes: 0
+            })
+        );
     }
+
     function voteOnNomination(uint256 issueID, address nominee) public {
         uint256 daoID = issues[issueID].daoID;
-        require(isMaintainer(daoID, msg.sender), "Only maintainers can vote on nominations");
-        require(!hasVoted(daoID, issueID, msg.sender), "Maintainer has already voted on this issue");
+        require(
+            isMaintainer(daoID, msg.sender),
+            "Only maintainers can vote on nominations"
+        );
+        require(
+            !hasVoted(daoID, issueID, msg.sender),
+            "Maintainer has already voted on this issue"
+        );
 
         uint256 votingPower = balanceOf(msg.sender);
         require(votingPower > 0, "Maintainer must have tokens to vote");
@@ -228,7 +268,7 @@ contract DAO is ERC20, ERC20Burnable, Ownable, ERC20Permit{
         for (uint i = 0; i < nominations[issueID].length; i++) {
             if (nominations[issueID][i].nominee == nominee) {
                 Nomination memory nomineeToUpdate = nominations[issueID][i];
-                nomineeToUpdate.votes += votingPower;
+                nomineeToUpdate.votes = nomineeToUpdate.votes + votingPower;
                 nominations[issueID][i] = nomineeToUpdate; // Update the array with the modified struct
                 nomineeFound = true;
                 break;
@@ -239,19 +279,43 @@ contract DAO is ERC20, ERC20Burnable, Ownable, ERC20Permit{
         voteCounter++;
         votes[voteCounter] = voteStruct(daoID, issueID, msg.sender);
     }
-     function assignIssue(uint256 issueID) public {
+
+    function assignIssue(uint256 issueID) public {
         require(issues[issueID].status == 0, "Issue is not open");
         uint256 maxVotes = 0;
-        address winningNominee = address(0);
+        address winningNominee = nominations[issueID][0].nominee;
         for (uint i = 0; i < nominations[issueID].length; i++) {
             if (nominations[issueID][i].votes > maxVotes) {
                 winningNominee = nominations[issueID][i].nominee;
                 maxVotes = nominations[issueID][i].votes;
             }
         }
-        require(winningNominee != address(0), "No winner found for issue assignment");
+        require(
+            winningNominee != address(0),
+            "No winner found for issue assignment"
+        );
         issues[issueID].status = 1;
         issues[issueID].contributor = winningNominee;
         issues[issueID].votes = maxVotes;
     }
-} 
+
+    function rewardContributor(uint256 issueID) public  {
+        require(
+            issues[issueID].status == 2,
+            "Issue must be marked as resolved before rewarding."
+        );
+        uint daoid = issues[issueID].daoID;
+        uint reward = (issues[issueID].weight + 1) * daoSupplies[daoid].tokenReward;
+        address contributor = issues[issueID].contributor;
+        require(
+            contributor != address(0),
+            "No contributor assigned to the issue."
+        );
+        require(
+            daoSupplies[daoid].remainingSupply >= reward,
+            "Insufficient tokens to reward."
+        );
+
+        _transfer(daos[daoid].Organizer, contributor, reward);
+    }
+}

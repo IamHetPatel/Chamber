@@ -26,11 +26,11 @@ module.exports = {
     scrollSepolia: {
       url: "https://sepolia-rpc.scroll.io",
       chainId: 534351,
-      accounts: [BASE_KEY],
+      accounts: [WALLET_KEY],
     },
     alfajores: {
       url: "https://alfajores-forno.celo-testnet.org",
-      accounts: [BASE_KEY],
+      accounts: [WALLET_KEY],
       chainId: 44787,
     }
   },
