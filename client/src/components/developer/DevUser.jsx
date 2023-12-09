@@ -33,9 +33,7 @@ const onSubmit = async () => {
 
       // Check if the error message contains the specific phrase
       if (errorMessage.includes("Wallet address already has a token")) {
-        // Navigate to the DeveloperPage.jsx when the error occurs
         navigate("/DeveloperPage");
- // Change to the correct path without the .jsx extension
       } else {
         // Handle other errors as needed
         console.error("Error:", error);

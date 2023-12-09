@@ -1,16 +1,26 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Issue from "./Issue";
 import "../../styles/projectModal.css"
 
+import { readContract, writeContract } from "@wagmi/core";
+import { contract_address as sbt_address } from "../../../contractData/newone-address.json";
+import { abi as sbt_abi } from "../../../contractData/newone.json";
+import { abi as dao_abi } from "../../../contractData/DAO.json";
+import { contract_address as dao_address } from "../../../contractData/DAO-address.json";
 const ProjectModal = ({ id, title, openModal, setOpenModal }) => {
   const fetchProjects = async () => {
     try {
-      
+      const getAllIssue = await readContract({
+        abi: dao_abi, 
+        address: dao_address, 
+        functionName: "getIssue", 
+      });
+      console.log(getAllIssue)
     } catch (error) {
       console.error("Error fetching projects:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchProjects();
   }, []);
