@@ -30,7 +30,7 @@
   right:0;
   padding-right:50px;
   /* background-color: black; */
-  width: 65%;
+  width: 55%;
   height: 100%;
   display: flex;
   justify-content: space-between;
@@ -47,7 +47,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30%;
+  width: 25%;
   height: 35%;
   font-size: 14px;
 }
@@ -55,6 +55,10 @@
 .menu-option:hover{
     background: #6C338D;
 }
+.menu-option:nth-child(3){
+  width: 17%;
+
+}
 .menu-option:nth-child(3):hover {
-  background-color: rgba(39, 39, 39, 0.78);
+  background-color: #6C338D;
 }

@@ -139,19 +139,20 @@ backdrop-filter: blur(3.5px); */
     border-radius: 40px;
     background: rgba(5, 1, 8, 0.54);
     padding:50px;   
+    
 }
 .modal-title{
     font-size: x-large;
     padding-bottom: 20px;   
 }
 .modal-text{
-    font-size: large;
-    padding-bottom: 20px;  
+    font-size:medium;
+    padding-bottom: 18px;  
     color: rgb(186, 185, 185); 
 }
 .add-maintainer{
     width: 100%;
-    font-size: x-large;
+    font-size:large;
     padding-bottom: 20px;
 }
 .modal-button{
@@ -164,6 +165,7 @@ backdrop-filter: blur(3.5px); */
     font-size: large;
     padding-left: 10px;
     margin-bottom: 20px;
+    font-family: 'Montserrat';
     margin-top: 10px;
     background: rgba(220,215,201, 0.05);
 }

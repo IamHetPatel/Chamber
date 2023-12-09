@@ -219,8 +219,16 @@ const CompanyPage = () => {
                 <input
                   type="text"
                   id="input"
-                  name="add-maintainer"
+                  name="maintainer-wallet"
                   placeholder="Maintainer wallet address"
+                  value={maintainerWalletAddress}
+                  onChange={(e) => setMaintainerWalletAddress(e.target.value)}
+                />
+                <input
+                  type="text"
+                  id="input"
+                  name="maintainer-github"
+                  placeholder="Maintainer GitHub Username"
                   value={maintainerWalletAddress}
                   onChange={(e) => setMaintainerWalletAddress(e.target.value)}
                 />
