@@ -1,13 +1,14 @@
 import '../styles/startPage.css'
+import { NavLink } from "react-router-dom";
 
 const StartPage = () => {
   return (
     <div>
       <div className='main-container'>
-        <div className='menu-option-startpage'>Company Login</div>
-        <div className='menu-option-startpage'>Contribute to a project</div>
-        <div className='menu-option-startpage'>Become an Investor</div>
-        <div className='menu-option-startpage'>Trade</div>
+        <NavLink className="menu-option-startpage" to="/CompanyPage">Company Login</NavLink>
+        <NavLink className="menu-option-startpage" to="/DeveloperPage">Contribute to a project</NavLink>
+        <NavLink className="menu-option-startpage" to="/InvestorPage">Become an Investor</NavLink>
+        <NavLink className="menu-option-startpage" to="#">Trade</NavLink>
       </div>
     </div>
   )

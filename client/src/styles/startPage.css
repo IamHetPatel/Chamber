@@ -33,6 +33,7 @@ backdrop-filter: blur(3.5px);
     line-height: normal;
     transition:all 0.5s ease;
     border-radius: 15px;
+    text-decoration: none;
 }
 
 .menu-option-startpage:hover{

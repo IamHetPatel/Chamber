@@ -1,6 +1,5 @@
 import "./App.css";
 import StartPage from "./pages/StartPage";
-import NavBar from "./layouts/Navbar";
 import InvestorPage from "./pages/InvestorPage";
 import CompanyPage from "./pages/CompanyPage";
 // import DeveloperPage from "./pages/DeveloperPage";
@@ -11,7 +10,7 @@ import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { useAccount } from "wagmi";
 import { useEffect,useState } from "react";
-
+import { Route, Routes } from "react-router-dom";
 
 import {
   mainnet,
@@ -50,7 +49,12 @@ function App() {
           <CompanyPage/> 
           <InvestorPage/> */}
         <Layout>
-          <CompanyPage />
+          <Routes>
+            <Route exact path="/" element={<StartPage />} />
+            <Route exact path="/CompanyPage" element={<CompanyPage />} />
+            <Route path="/DeveloperPage" element={<DeveloperPage />} />
+            <Route path="/InvestorPage" element={<InvestorPage />}/>
+          </Routes>
         </Layout>
       </RainbowKitProvider>
     </WagmiConfig>
