@@ -1,4 +1,6 @@
 # Chamber
+![image](https://github.com/IamHetPatel/Chamber/assets/102367838/93669f85-a64e-4130-8a0f-3d77178b7e7c)
+
 **Chamber: Reimagining Project Funding and Management**
 
 In the burgeoning landscape of collaborative development, traditional models of project funding and contribution management are often centralized, opaque, and lack flexibility. Projects face challenges in attracting and retaining talented developers, fairly distributing rewards, and maintaining control over project direction.
