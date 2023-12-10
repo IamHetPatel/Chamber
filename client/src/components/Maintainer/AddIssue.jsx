@@ -13,7 +13,6 @@ const AddIssue = ({ setOpenAddIssueModal }) => {
   const handleAddIssue = async (e) => {
     e.preventDefault();
     try {
-
       console.log(projectId)
       const projID = await readContract({
         abi : dao_abi,

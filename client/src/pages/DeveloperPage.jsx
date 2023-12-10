@@ -7,13 +7,17 @@ import { contract_address as sbt_address } from "../../contractData/newone-addre
 import { abi as sbt_abi } from "../../contractData/newone.json";
 import { abi as dao_abi } from "../../contractData/DAO.json";
 import { contract_address as dao_address } from "../../contractData/DAO-address.json";
-
+import {useAccount, useNetwork} from "wagmi"
 const DeveloperPage = () => {
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [projects, setProjects] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedTitle, setSelectedTitle] = useState("");
   const [selectedId, setSelectedId] = useState("");
+  const {address} = useAccount();
+  const {chain} = useNetwork();
+  const [projectName,setProjectName] = useState("")
+  const [issueID,setIssueID] = useState("")
 
 // Fetch projects from DAO API when the component mounts
 const fetchProjects = async () => {
@@ -21,7 +25,7 @@ const fetchProjects = async () => {
     console.log(123)
     const response = await readContract({
       abi: dao_abi, // The ABI for your DAO contract
-      address: dao_address, // The address of your DAO contract
+      address: dao_address[chain.id], // The address of your DAO contract
       functionName: "getDAO", // The function name to call
     });
     const data = response;
@@ -48,6 +52,36 @@ useEffect(() => {
   fetchProjects();
 }, []);
 
+const transferReward = async(e)=>{
+  e.preventDefault();
+  try{
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "walletAddress": address
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("http://10.0.1.160:3000/myIssues", requestOptions)
+      .then(response => response.text())  
+      .then(result => {
+        console.log(result)
+        console.log(result[0])
+        console.log(issueID)
+      })
+      .catch(error => console.log('error', error));
+  }
+  catch(error){
+    console.log(error)
+  }
+}
   return (
     <>
       <div className="developer-page-container">
@@ -106,11 +140,17 @@ useEffect(() => {
                 <div className="pre-cont-name">Chamber1</div>
                 <div className="pre-cont-num">#1</div>
                 <div className="pre-cont-token">11</div>
+                <div>
+                  <button onClick={(e)=>transferReward(e)}>Get Reward</button>
+                </div>
               </div>
               <div className="previous-contribution">
-                <div className="pre-cont-name">Chamber1</div>
+                <div className="pre-cont-name">Chamber2</div>
                 <div className="pre-cont-num">#1</div>
-                <div className="pre-cont-token">11</div>
+                <div className="pre-cont-token">10</div>
+                <div>
+                  <button>Get Reward</button>
+                </div>
               </div>
             </div>
           </div>

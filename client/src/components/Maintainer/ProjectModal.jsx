@@ -12,9 +12,10 @@ const ProjectModal = ({ id, title, openModal, setOpenModal }) => {
  const fetchProjects = async () => {
       try {
         const getAllIssue = await readContract({
-          abi: dao_abi, 
+          abi: dao_abi,
           address: dao_address, 
-          functionName: "getIssue", 
+          functionName: "getIssueByDAO",
+          args:[id], 
         });
         console.log(getAllIssue)
         setIssues(getAllIssue)
@@ -25,7 +26,7 @@ const ProjectModal = ({ id, title, openModal, setOpenModal }) => {
     
     useEffect(() => {
       fetchProjects();
-    }, []); 
+    }); 
 
 
   return (
