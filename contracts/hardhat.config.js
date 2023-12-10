@@ -32,7 +32,11 @@ module.exports = {
       url: "https://alfajores-forno.celo-testnet.org",
       accounts: [WALLET_KEY],
       chainId: 44787,
-    }
+    },
+    mantleTest: {
+      url: "https://rpc.testnet.mantle.xyz", // testnet
+      accounts: [WALLET_KEY]
+      }
   },
   etherscan: {
     apiKey: {

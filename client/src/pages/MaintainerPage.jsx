@@ -27,6 +27,7 @@ const MaintainerPage = () => {
       });
 
       const firstItem = dataDAO[0];
+      console.log(firstItem);
 
       setDaoData({
         id: firstItem.id,

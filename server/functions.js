@@ -1,6 +1,6 @@
 const { Octokit } = require("octokit");
 const Company = require('./schema');
-const { Mongoose } = require("mongoose");
+const Issues = require('./issueSchema')
 
 const getIssues = async (owner, repo, token) => {
   const octokit = new Octokit({
@@ -28,7 +28,10 @@ const createCompany = async(username, token, walletAddress)=>{
 
 
 
-const addCollaborator = async (owner, repo ,assignee, token) => {
+const addCollaborator = async (owner, repo ,assignee) => {
+  const userCompany = await Company.findOne({username:owner})
+  const token = userCompany.token;
+
   try {
   const octokit = new Octokit({
     auth: token
@@ -48,7 +51,7 @@ const addCollaborator = async (owner, repo ,assignee, token) => {
 }
 };
 
-const assignIssues = async (owner, repo, issue_number,assignee) => {
+const assignIssues = async (owner, repo, issue_number,assignee, walletAddress) => {
   const userCompany = await Company.findOne({username:owner})
   const token = userCompany.token;
 
@@ -66,6 +69,14 @@ const assignIssues = async (owner, repo, issue_number,assignee) => {
     }
   })
 
+  const addIssue = new Issues({
+    project:repo,
+    issuesId:issue_number,
+    walletAddress:walletAddress
+  })
+
+  await addIssue.save()
+
   return await octokit.request(
     "POST /repos/{owner}/{repo}/issues/{issue_number}/assignees",
     {
@@ -79,6 +90,11 @@ const assignIssues = async (owner, repo, issue_number,assignee) => {
     }
   );
 };
+
+const getMyIssues = async(walletAddress)=>{
+  const issues = await Issues.find({walletAddress:walletAddress})
+  return issues
+}
 
 const createIssue = async (owner, repo, title, body) => {
   try {
@@ -121,4 +137,25 @@ const createRepo = async (name, description, token) => {
   }
 };
 
-module.exports = { getIssues, createIssue, createRepo, assignIssues, addCollaborator, getIssues, createCompany };
+
+const checkStatus = async(token, issue_number, owner, repo)=>{
+  const octokit = new Octokit({
+    auth: token,
+  });
+
+  const response = await octokit.request("GET /repos/{owner}/{repo}/issues/{issue_number}", {
+    owner: owner,
+    repo: repo,
+    issue_number: issue_number,
+    headers: {
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+  if (response.state == 'open') {
+    return false
+  } else {
+    return true
+  }
+}
+
+module.exports = { getIssues, createIssue, createRepo, assignIssues, addCollaborator, getIssues, createCompany, getMyIssues, checkStatus };

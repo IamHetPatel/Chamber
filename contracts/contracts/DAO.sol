@@ -193,15 +193,9 @@ contract DAO is ERC20, ERC20Burnable, ERC20Permit {
     }
 
     function getIssue() public view returns (issueStruct[] memory) {
-        uint numIssue = 0;
-        for (uint i = 1; i <= issueCounterCounter; i++) {
-            if (issues[i].daoID == daoID) {
-                numIssue++;
-            }
-        }
-        issueStruct[] memory allIssue = new issueStruct[](numIssue);
-        for (uint i = 1; i <= numIssue; i++) {
-            allIssue[i - 1] = issues[i];
+        issueStruct[] memory allIssue = new issueStruct[](issueCounter);
+        for (uint i = 0; i <= issueCounter; i++) {
+            allIssue[i] = issues[i+1];
         }
         return allIssue;
     }

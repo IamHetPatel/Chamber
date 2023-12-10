@@ -26,10 +26,13 @@ import {
   zora,
   sepolia,
   hardhat,
+  baseGoerli,
+  celoAlfajores,
+  scrollSepolia,
 } from "wagmi/chains";
 
 const { chains, publicClient } = configureChains(
-  [mainnet, polygon, optimism, arbitrum, base, zora, hardhat, sepolia],
+  [mainnet, polygon, optimism, arbitrum, base, zora, hardhat, sepolia,baseGoerli,celoAlfajores,scrollSepolia],
   [publicProvider()]
 );
 const { connectors } = getDefaultWallets({

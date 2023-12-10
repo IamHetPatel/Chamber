@@ -71,64 +71,33 @@ app.post('/getOpenIssue', async(req, res) => {
   
 
   res.status(200).send(response)
-
 })
 
 app.post('/addCollaborator', async(req, res) => {
-    const {owner, repo,assignee, token} = req.body;
-    const response = await functions.addCollaborator(owner, repo, assignee, token)
+    const {owner, repo,assignee} = req.body;
+    const response = await functions.addCollaborator(owner, repo, assignee)
     res.status(200).send({response : response})
 
 })
 
 app.post('/addAssignee', async(req, res) => {
-    const {owner, repo, issue_number,assignee, token} = req.body;
-    const response = await functions.assignIssues(owner, repo, issue_number,assignee, token)
+    const {owner, repo, issue_number,assignee, walletAddress} = req.body;
+    const response = await functions.assignIssues(owner, repo, issue_number,assignee, walletAddress)
     res.status(200).send(response)
-
+ 
 })
 
-app.post('/api/check_pr_merged', async (req, res) => {
+app.post('/myIssues', async(req, res) => {
+    const {walletAddress} = req.body;
+    const response = await functions.getMyIssues(walletAddress)
+    res.status(200).send(response)
+})
+
+app.post('/checkStatus', async (req, res) => {
     const { token, issue_number, owner, repo } = req.body;
-  
-    if (!token || !issue_number || !owner || !repo) {
-      return res.status(400).send({
-        message: 'Missing required parameters',
-      });
-    }
-  
-    try {
-      const response = await axios.get(
-        `https://api.github.com/repos/${owner}/${repo}/issues/${issue_number}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-    //   console.log(JSON.parse(response.pull_request));
-      const pullRequestUrl = response.pull_request.url;
-  
-      const pullRequestResponse = await axios.get(pullRequestUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
-      const merged = pullRequestResponse.data.merged;
-  
-      res.status(200).send({
-        merged,
-        message: merged
-          ? 'Pull request is merged'
-          : 'Pull request is not merged',
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({
-        message: 'Error checking pull request status',
-      });
-    }
+
+    const response = await functions.checkStatus(token, issue_number, owner, repo)
+    return response
   });
 
 app.listen(PORT, () => {
